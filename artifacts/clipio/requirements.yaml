@@ -1,0 +1,13 @@
+packages:
+  "framer-motion": "For page transitions, smooth progress bars, and premium micro-interactions"
+  "clsx": "For conditional class names"
+  "tailwind-merge": "For merging Tailwind classes seamlessly"
+
+images:
+  - path: "artifacts/clipio/public/images/hero-bg.png"
+    description: "Abstract dark mode background with electric violet and deep purple glowing light leaks, premium glassmorphism aesthetic, sleek smooth gradients, highly detailed"
+    aspect_ratio: "16:9"
+
+notes:
+  - "The app relies on polling GET /api/clipio/status/{jobId} every 2s until completed."
+  - "The API schema provides all types via @workspace/api-client-react."

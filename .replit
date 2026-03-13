@@ -1,4 +1,4 @@
-modules = ["nodejs-24"]
+modules = ["nodejs-24", "python-3.11"]
 
 [[artifacts]]
 id = "artifacts/api-server"
@@ -24,3 +24,9 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[userenv]
+
+[userenv.shared]
+GEMINI_API_KEY = "AIzaSyBrWwT3ZVkjMxYYXM_PNw0JUOszAnyLIec"
+ASSEMBLYAI_API_KEY = "3a57817578dd434da5babf9fd011587e"

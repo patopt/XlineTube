@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/clipio/"
+title = "ClipIO - AI Short Clips Generator"
+version = "1.0.0"
+id = "artifacts/clipio"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 25819
+name = "web"
+paths = ["/clipio/"]
+
+[services.development]
+run = "pnpm --filter @workspace/clipio run dev"
+
+[services.env]
+PORT = "25819"
+BASE_PATH = "/clipio/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/clipio", "run", "build"]
+publicDir = "artifacts/clipio/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
