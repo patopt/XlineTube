@@ -6,7 +6,7 @@ import { rm, readFile } from "fs/promises";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// server deps to bundle to reduce openat(2) syscalls
+// Dépendances à inclure dans le bundle pour optimiser les performances sur Vercel
 const allowlist = [
   "@google/generative-ai",
   "axios",
@@ -37,15 +37,19 @@ const allowlist = [
 
 async function buildAll() {
   const distDir = path.resolve(__dirname, "dist");
+  // Nettoyage du dossier de sortie
   await rm(distDir, { recursive: true, force: true });
 
   console.log("building server...");
   const pkgPath = path.resolve(__dirname, "package.json");
   const pkg = JSON.parse(await readFile(pkgPath, "utf-8"));
+  
   const allDeps = [
     ...Object.keys(pkg.dependencies || {}),
     ...Object.keys(pkg.devDependencies || {}),
   ];
+  
+  // On exclut les packages du bundle s'ils ne sont pas dans l'allowlist ou s'ils sont des liens de workspace
   const externals = allDeps.filter(
     (dep) =>
       !allowlist.includes(dep) &&
@@ -56,10 +60,10 @@ async function buildAll() {
     entryPoints: [path.resolve(__dirname, "src/index.ts")],
     platform: "node",
     bundle: true,
-    format: "esm", // Changé de 'cjs' à 'esm' pour supporter import.meta.url
-    outfile: path.resolve(distDir, "index.js"), // Extension changée en .js
+    format: "esm", // Obligatoire pour supporter import.meta.url sur Vercel
+    outfile: path.resolve(distDir, "index.js"), // Sortie en .js standard
     banner: {
-      // Ajout d'un shim pour la compatibilité require/__dirname en ESM
+      // Polyfills essentiels pour faire fonctionner les variables Node classiques en mode ESM
       js: `
         import { createRequire } from 'module';
         import { fileURLToPath } from 'url';
