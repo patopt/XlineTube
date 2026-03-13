@@ -7,8 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // server deps to bundle to reduce openat(2) syscalls
-// which helps cold start times without risking some
-// packages that are not bundle compatible
 const allowlist = [
   "@google/generative-ai",
   "axios",
@@ -58,8 +56,19 @@ async function buildAll() {
     entryPoints: [path.resolve(__dirname, "src/index.ts")],
     platform: "node",
     bundle: true,
-    format: "cjs",
-    outfile: path.resolve(distDir, "index.cjs"),
+    format: "esm", // Changé de 'cjs' à 'esm' pour supporter import.meta.url
+    outfile: path.resolve(distDir, "index.js"), // Extension changée en .js
+    banner: {
+      // Ajout d'un shim pour la compatibilité require/__dirname en ESM
+      js: `
+        import { createRequire } from 'module';
+        import { fileURLToPath } from 'url';
+        import { dirname } from 'path';
+        const require = createRequire(import.meta.url);
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
+      `,
+    },
     define: {
       "process.env.NODE_ENV": '"production"',
     },
