@@ -1,15 +1,20 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "artifacts/api-server/package.json",
-      "use": "@vercel/node"
-    }
-  ],
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm run build",
+  "devCommand": "pnpm run dev",
+  "framework": null,
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/artifacts/api-server/src/index.ts"
+      "destination": "/artifacts/api-server/dist/index.js"
     }
-  ]
+  ],
+  "functions": {
+    "artifacts/api-server/dist/index.js": {
+      "runtime": "nodejs20.x",
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
 }
